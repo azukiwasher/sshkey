@@ -56,12 +56,10 @@ class SSHKey
 
   def initialize(private_key, options = {})
     begin
-      #@key_object = OpenSSL::PKey::RSA.new(private_key, options[:pass])
-      @key_object = OpenSSL::PKey::RSA.new(private_key, 'test01test')
+      @key_object = OpenSSL::PKey::RSA.new(private_key, options[:pass])
       @type = "rsa"
     rescue
-      #@key_object = OpenSSL::PKey::DSA.new(private_key, options[:pass])
-      @key_object = OpenSSL::PKey::DSA.new(private_key, 'test01test')
+      @key_object = OpenSSL::PKey::DSA.new(private_key, options[:pass])
       @type = "dsa"
     end
 
