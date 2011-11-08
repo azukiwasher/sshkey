@@ -11,7 +11,6 @@ class SSHKey
   def self.generate(options = {})
     type = options[:type] || "rsa"
     bits = options[:bits] || 2048
-    pass = options[:pass] || ""
     case type.downcase
     when "rsa" then SSHKey.new(OpenSSL::PKey::RSA.generate(bits).to_pem, options)
     when "dsa" then SSHKey.new(OpenSSL::PKey::DSA.generate(bits).to_pem, options)
