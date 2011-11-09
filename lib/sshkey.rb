@@ -55,6 +55,7 @@ class SSHKey
   end
 
   def initialize(private_key, options = {})
+
     begin
       @key_object = OpenSSL::PKey::RSA.new(private_key)
       @type = "rsa"
@@ -65,12 +66,12 @@ class SSHKey
       @cipher = OpenSSL::Cipher::Cipher.new('AES-128-CBC')
     end
 
-    @pass = options[:pass].strip!
+    @pass = options[:pass].strip
     @comment = options[:comment] || ""
   end
 
   def private_key
-    key_object.to_pem(@cipher, @pass)
+    key_object.to_pem(cipher, pass)
   end
 
   def public_key
