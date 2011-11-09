@@ -66,12 +66,16 @@ class SSHKey
       @cipher = OpenSSL::Cipher::Cipher.new('AES-128-CBC')
     end
 
-    @pass = options[:pass].strip
+    @pass = options[:pass] || ""
     @comment = options[:comment] || ""
   end
 
   def private_key
-    key_object.to_pem(cipher, pass)
+    if pass.strip.size > 0
+      key_object.to_pem(cipher, pass)
+    else
+      key_object.to_pem
+    end
   end
 
   def public_key
