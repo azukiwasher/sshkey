@@ -6,7 +6,7 @@ class SSHKey
   SSH_TYPES      = {"rsa" => "ssh-rsa", "dsa" => "ssh-dss"}
   SSH_CONVERSION = {"rsa" => ["e", "n"], "dsa" => ["p", "q", "g", "pub_key"]}
 
-  attr_reader :key_object, :comment, :type
+  attr_reader :key_object, :comment, :type, :cipher, :pass
 
   def self.generate(options = {})
     type = options[:type] || "rsa"
@@ -56,18 +56,21 @@ class SSHKey
 
   def initialize(private_key, options = {})
     begin
-      @key_object = OpenSSL::PKey::RSA.new(private_key, options[:pass])
+      @key_object = OpenSSL::PKey::RSA.new(private_key)
       @type = "rsa"
+      @cipher = OpenSSL::Cipher::Cipher.new('AES-128-CBC')
     rescue
-      @key_object = OpenSSL::PKey::DSA.new(private_key, options[:pass])
+      @key_object = OpenSSL::PKey::DSA.new(private_key)
       @type = "dsa"
+      @cipher = OpenSSL::Cipher::Cipher.new('AES-128-CBC')
     end
 
+    @pass = options[:pass].strip!
     @comment = options[:comment] || ""
   end
 
   def private_key
-    key_object.to_pem
+    key_object.to_pem(@cipher, @pass)
   end
 
   def public_key
